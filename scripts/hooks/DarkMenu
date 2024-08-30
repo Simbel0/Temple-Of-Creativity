@@ -1,0 +1,99 @@
+---@class DarkMenu : Object
+---@overload fun(...) : DarkMenu
+local DarkMenu, super = Class("DarkMenu", true)
+
+function DarkMenu:onButtonSelect(button)
+	if button == 3 then
+		self.state = "POWERMENU"
+		Input.clear("confirm")
+
+		local outer = Component(FixedSizing(640, 480))
+		outer:setLayout(VerticalLayout({ gap = 0, align = "center" }))
+			local inner = Component(FillSizing(), FitSizing())
+			inner:setLayout(HorizontalLayout({ gap = 0, align = "center" }))
+				local box = BoxComponent(FixedSizing(290, 317))
+				box:setMargins(0, 20, 0, 0)
+					local menu = BasicMenuComponent(FitSizing())
+						menu:setLayout(VerticalLayout({ gap = 0, align = "center" }))
+
+						menu.lv_text = Text("LV "..Game.party[1].level)
+						menu.lv_text:setScale(0.5)
+						menu.title_text = Text(Game.party[1].title:sub(1, Game.party[1].title:find("\n")-1))
+						menu.title_text:setScale(0.75)
+						menu.desc_text = Text(Game.party[1].title:sub(Game.party[1].title:find("\n")+1, -1))
+						menu.member_spr = Sprite(Game.party[1].actor.path.."/walk/down_1")
+						menu.member_spr:setScale(2)
+
+						menu:addChild(menu.lv_text)
+
+						local tab = {}
+						for i,member in ipairs(Game.party) do
+							table.insert(tab, member.name)
+						end
+						local list = ArrowListMenuItemComponent(tab, 1, function(index)
+							menu.lv_text:setText("LV "..Game.party[index].level)
+							local title = Game.party[index].title:sub(1, Game.party[index].title:find("\n")-1)
+							local desc = Game.party[index].title:sub(Game.party[index].title:find("\n")+1, -1)
+							menu.title_text:setText(title)
+							menu.desc_text:setText(desc)
+							menu.member_spr:setSprite(Game.party[index].actor.path.."/walk/down_1")
+						end, {selected_color={1, 1, 1}})
+						list.onHovered = function(hovered, from_focused)
+							print("what the fuck feesh")
+							list.selected = hovered
+    						if hovered and not from_focused then
+        						Assets.playSound("ui_move")
+    						end
+    						if hovered then list:setFocused() end
+						end
+						list.onUnfocused = function()
+							print("hey?")
+							menu:close()
+						end
+						menu:addChild(list)
+
+						menu:addChild(menu.title_text)
+						menu:addChild(menu.member_spr)
+						menu:addChild(menu.desc_text)
+
+		                menu:setFocused()
+		                menu:setSelected(1)
+		                list:setFocused()
+				box:addChild(menu)
+
+				--[[local box2 = BoxComponent(FitSizing())
+				box2:setMargins(0, 0, 0, 0)
+					local menu = BasicMenuComponent(FitSizing())
+						menu:setLayout(VerticalLayout({ gap = 0, align = "start" }))
+						menu:addChild(SoulMenuItemComponent(Text("Option 6"), function() print("Option 1 was selected!") end))
+		                menu:addChild(SoulMenuItemComponent(Text("Option 7"), function() print("Option 2 was selected!") end))
+		                menu:addChild(SoulMenuItemComponent(Text("Option 8"), function() print("Option 3 was selected!") end))
+		                menu:addChild(SoulMenuItemComponent(Text("Option 9"), function() print("Option 4 was selected!") end))
+		                menu:addChild(SoulMenuItemComponent(Text("Option 10"), function() print("Option 5 was selected!") end))
+
+		                --menu:setFocused()
+				box2:addChild(menu)
+
+				local box3 = BoxComponent(FitSizing())
+				box3:setMargins(0, 0, 0, 0)
+					local menu = BasicMenuComponent(FitSizing())
+						menu:setLayout(VerticalLayout({ gap = 0, align = "start" }))
+						menu:addChild(SoulMenuItemComponent(Text("Option 6"), function() print("Option 1 was selected!") end))
+		                --menu:addChild(SoulMenuItemComponent(Text("Option 7"), function() print("Option 2 was selected!") end))
+		                --menu:addChild(SoulMenuItemComponent(Text("Option 8"), function() print("Option 3 was selected!") end))
+		                --menu:addChild(SoulMenuItemComponent(Text("Option 9"), function() print("Option 4 was selected!") end))
+		                --menu:addChild(SoulMenuItemComponent(Text("Option 10"), function() print("Option 5 was selected!") end))
+
+		                --menu:setFocused()
+				box3:addChild(menu)]]
+			inner:addChild(box)
+			--inner:addChild(box2)
+			--inner:addChild(box3)
+		outer:addChild(inner)
+		self:addChild(outer)
+	else
+		super:onButtonSelect(self, button)
+	end
+end
+
+return DarkMenu

@@ -1,0 +1,12 @@
+{
+    "id": "example",
+    "name": "Temple of Creativity",
+    "subtitle": "Beyond the lake of Hometown, the heroes of whatever the fuck Dark Place's legend is supposed to be discovered a place very different from the town. With pink trees, pretty paths, guards and a huge temple hiding someone who would like to see something out of the ordinary... Like the Dark World, maybe?",
+
+    "version": "v1.0.0",
+    "commit": "f733c4d0",
+
+    "chapter": 2,
+
+    "map": "room1"
+}
